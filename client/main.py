@@ -2,47 +2,38 @@
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
+from vfd_service import SerialVFD
+from message_formatter import MessageFormatter, rotate_long_message
 import time
+import pytz
 import serial
-REQ_MESSAGE_LENGTH = 40
-NC_MESSAGE = "DISCONNECTED"
-GO_HOME = bytearray.fromhex("fe48")
-GO_LINE_2 = bytearray.fromhex("fe470102")
-MAX_FRAME_RATE = 1
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
-def format_line(line: str):
-    if len(line) < REQ_MESSAGE_LENGTH:
-        line = line + (" " * (REQ_MESSAGE_LENGTH - len(line)))
-    return line[0:REQ_MESSAGE_LENGTH]
+
+
+
+
+
 
 def main():
-    vfd_serial_conn = serial.Serial(
-        port='COM5',
-        baudrate=9600,
-        parity=serial.PARITY_NONE,
-        stopbits=serial.STOPBITS_ONE,
-        bytesize=serial.EIGHTBITS
-    )
+    vfd = SerialVFD('COM5')
+    formatter = MessageFormatter(scroll_speed=0.1)
+    local_timezone = pytz.timezone("America/Los_Angeles")
+    line_1_message = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890@#$%^&*()_-+={}[]:;?/>|!@#$%^&*()_-+={}[]:;?/><|.,`~"
 
 
-    count = 0
 
     while True:
-        vfd_serial_conn.write(GO_HOME)
-        message = "o8uY9f6D8a22DNOpdaGfbLQ " + str(count)
-        message2 = "!@#$%^&*()_-+={}[]:;?/>" + str(count)
-        count = count + 1
-        line_1 = format_line(message)
-        line_1_byte_array = bytearray()
-        line_1_byte_array.extend(map(ord, format_line(line_1)))
-        vfd_serial_conn.write(line_1_byte_array)
+        current_time = datetime.now(local_timezone)
+        line_2_message = current_time.strftime("%I:%M:%S %p")
 
-        vfd_serial_conn.write(GO_LINE_2)
-        line_2 = format_line(message2)
-        line_2_byte_array = bytearray()
-        line_2_byte_array.extend(map(ord, format_line(line_2)))
-        vfd_serial_conn.write(line_2_byte_array)
+        line_1_byte_array = formatter.format_line(line_1_message)
+        line_2_byte_array = formatter.format_line(line_2_message)
+        vfd.push_frame(line_1_byte_array, line_2_byte_array)
+        line_1_message = rotate_long_message(line_1_message)
+        time.sleep(0.1)
+
 
 
 # Press the green button in the gutter to run the script.

@@ -1,2 +1,3 @@
 /client/.env
+/client/__pycache__/
 /.idea/
