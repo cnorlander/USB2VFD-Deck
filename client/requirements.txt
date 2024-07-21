@@ -1,3 +1,5 @@
 pyserial
 python-dotenv
 pytz
+env-canada
+feedparser

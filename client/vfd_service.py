@@ -23,7 +23,7 @@ def serial_connect(serial_port):
 class SerialVFD:
     GO_HOME = bytearray.fromhex("fe48")
     GO_LINE_2 = bytearray.fromhex("fe470102")
-    MAX_FRAME_RATE = 10
+    MAX_FRAME_RATE = 20
 
     def __init__(self, serial_port, nc_message: str = "DISCONNECTED"):
         self.serial_port = serial_port
