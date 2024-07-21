@@ -3,3 +3,4 @@ python-dotenv
 pytz
 env-canada
 feedparser
+unidecode

@@ -37,12 +37,12 @@ def main():
         current_time = datetime.now()
 
         # Fetch the weather every hour
-        if not weather_update_time or current_time - weather_update_time > timedelta(hours=1):
+        if not weather_update_time or current_time - weather_update_time > timedelta(minutes=10):
             weather_update_time = current_time
             weather_string = get_current_weather(weather_latitude, weather_longitude)
 
         # Fetch the news every hour (forms line 1)
-        if not rss_update_time or current_time - rss_update_time > timedelta(hours=1):
+        if not rss_update_time or current_time - rss_update_time > timedelta(minutes=10):
             rss_update_time = current_time
             line_1_message = get_top_posts(rss_url, rss_post_count)
 
