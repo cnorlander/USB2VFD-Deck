@@ -10,6 +10,8 @@ def get_current_weather(latitude: int, longitude: int) -> str:
     if not condition:
         condition = ""
 
-    weather_string = f"{condition} {ec_en.conditions['temperature']['value']}| HI:{ec_en.conditions['high_temp']['value']}|"
+    print(json.dumps(ec_en.conditions, indent=4, default=str))
+
+    weather_string = f"{condition} {ec_en.conditions['temperature']['value']}| ^{ec_en.conditions['high_temp']['value']}|"
     return weather_string
 
